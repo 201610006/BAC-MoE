@@ -2,9 +2,10 @@ import math
 import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 from torch.autograd import Variable
-__all__ = ['ResNet', 'resnet50', 'resnet101', 'resnet152']
+__all__ = ['ResNet', 'resnet18', 'resnet50', 'resnet101', 'resnet152']
 
 model_urls = {
+    'resnet18': 'https://download.pytorch.org/models/resnet18-5c106cde.pth',
     'resnet50':'https://download.pytorch.org/models/resnet50-19c8e357.pth',
     'resnet101': 'https://download.pytorch.org/models/resnet101-5d3b4d8f.pth',
     'resnet152': 'https://download.pytorch.org/models/resnet152-b121ed2d.pth',
@@ -138,6 +139,16 @@ class ResNet(nn.Module):
         self.load_state_dict(state_dict)
 
 
+def ResNet18(pretrained=True):
+    """Constructs a ResNet-18 model.
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+    """
+    model = ResNet(Bottleneck, [2, 2, 2, 2])
+    if pretrained:
+        model.load_state_dict(model_zoo.load_url(model_urls['resnet18']), strict=False)
+    return model
+
 def ResNet50(pretrained=True):
     """Constructs a ResNet-50 model.
     Args:
@@ -159,7 +170,7 @@ def ResNet101(pretrained=True):
 
 if __name__ == "__main__":
     import torch
-    model = ResNet50(pretrained=False)
+    model = ResNet18(pretrained=False)
     # model.cuda()
     input = torch.rand(1, 3, 512, 512)
     # input = Variable(input.cuda())
