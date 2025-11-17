@@ -7,7 +7,7 @@ import torch.nn.functional as F
 from torchvision.models.resnet import ResNet
 from torch.autograd import Variable
 
-from resnet import ResNet50
+from resnet import ResNet18
 
 class Bottleneck(nn.Module):
     expansion = 4
@@ -40,7 +40,7 @@ class Bottleneck(nn.Module):
 
 class FPN(nn.Module):
 
-    def __init__(self, num_blocks, pretrained=False):
+    def __init__(self, num_blocks, pretrained=True):
         super(FPN, self).__init__()
         self.in_planes = 64
 
@@ -48,7 +48,7 @@ class FPN(nn.Module):
         self.bn1 = nn.BatchNorm2d(64)
 
         BatchNorm = nn.BatchNorm2d
-        self.back_bone = ResNet50(pretrained=pretrained)
+        self.back_bone = ResNet18(pretrained=pretrained)
 
         # Bottom-up layers
         self.layer1 = self._make_layer(Bottleneck,  64, num_blocks[0], stride=1)
@@ -166,6 +166,6 @@ class FPN(nn.Module):
 
 if __name__ == "__main__":
     model = FPN([3,4,23,3])
-    input = torch.rand(1,1,512,512)
+    input = torch.rand(1,3,512,512)
     output = model(input)
     print(output[0].size(), output[1].size())#(1,1,512,512)
