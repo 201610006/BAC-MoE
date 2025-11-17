@@ -210,7 +210,7 @@ class BACMoE_Model(nn.Module):
 
 
 
-x = torch.randn(1, 3, 416, 416)  # 假设为 [B, C, H, W]
-model = BACMoE_Model(num_classes=19)
-out, _ = model(x, mode='eval_topk')
-print(out.shape)
+# x = torch.randn(1, 3, 416, 416)  # 假设为 [B, C, H, W]
+# model = BACMoE_Model(num_classes=19)
+# out, _ = model(x, mode='eval_topk')
+# print(out.shape)
