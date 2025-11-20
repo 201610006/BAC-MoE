@@ -33,7 +33,6 @@ class FPN(nn.Module):
         self.conv2 = nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, stride=1, padding=1)
 
         self.gn1 = nn.GroupNorm(output_dim, output_dim)
-        self.gn2 = nn.GroupNorm(hidden_dim, hidden_dim)
 
     def _upsample(self, x, h, w):
         return F.interpolate(x, size=(h, w), mode='bilinear', align_corners=True)
@@ -67,15 +66,12 @@ class FPN(nn.Module):
 
         # Semantic
         _, _, h, w = p2.size()
+        print('=====================',h, w)
         # 256->256
-        s5 = self._upsample(F.relu(self.gn2(self.conv2(p5))), h, w)
-        # 256->128
-        s5 = self._upsample(F.relu(self.gn1(self.semantic_branch(s5))), h, w)
+        s5 = self._upsample(F.relu(self.gn1(self.semantic_branch(p5))), h, w)
 
-        # 256->256
-        s4 = self._upsample(F.relu(self.gn2(self.conv2(p4))), h, w)
         # 256->128
-        s4 = self._upsample(F.relu(self.gn1(self.semantic_branch(s4))), h, w)
+        s4 = self._upsample(F.relu(self.gn1(self.semantic_branch(p4))), h, w)
 
         # 256->128
         s3 = self._upsample(F.relu(self.gn1(self.semantic_branch(p3))), h, w)
@@ -83,4 +79,3 @@ class FPN(nn.Module):
         s2 = F.relu(self.gn1(self.semantic_branch(p2)))
         # return self._upsample(self.conv3(s2 + s3 + s4 + s5), 4*h, 4*w)
         return s2 + s3 + s4 + s5, p5
-    
