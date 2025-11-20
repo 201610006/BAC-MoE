@@ -165,7 +165,7 @@ def router_entropy_loss(gates):
 class BACMoE_Model(nn.Module):
     def __init__(self, k_fourier=5, k_fuzzy=5, k_evl=4, num_classes=1):
         super().__init__()
-        self.encoder = FPN([3,4,23,3], pretrained=False) #True)
+        self.encoder = FPN(hidden_dim=128, output_dim=128, pretrained=True)
         self.experts_fourier = nn.ModuleList([FGEA(mode='high') for _ in range(k_fourier)])
         self.experts_fuzzy = nn.ModuleList([IEAR() for _ in range(k_fuzzy)])
         self.router_fourier = GumbelRouter(in_dim=256, num_experts=k_fourier)
